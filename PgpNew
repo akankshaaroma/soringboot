@@ -1,0 +1,51 @@
+import org.bouncycastle.bcpg.ArmoredInputStream;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openpgp.*;
+import org.bouncycastle.openpgp.operator.jcajce.*;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.security.Security;
+import java.util.Base64;
+import java.util.Iterator;
+
+public class PGPKeyFromBase64 {
+    public static void main(String[] args) throws Exception {
+        Security.addProvider(new BouncyCastleProvider());
+
+        String base64Key = "your-very-long-base64-string"; // Put your key here
+        String passphrase = "your-passphrase"; // Replace with real passphrase or empty string if not protected
+
+        // Clean and decode
+        byte[] decoded = Base64.getDecoder().decode(base64Key.replaceAll("\\s+", ""));
+        InputStream keyStream = new ByteArrayInputStream(decoded);
+
+        // Load the secret key ring
+        PGPSecretKeyRingCollection secretKeyRingCollection = new PGPSecretKeyRingCollection(
+                PGPUtil.getDecoderStream(keyStream),
+                new JcaKeyFingerprintCalculator()
+        );
+
+        PGPPrivateKey privateKey = extractPrivateKey(secretKeyRingCollection, passphrase);
+        System.out.println("Private key extracted: " + (privateKey != null));
+    }
+
+    private static PGPPrivateKey extractPrivateKey(PGPSecretKeyRingCollection pgpSec, String passphrase) throws Exception {
+        Iterator<PGPSecretKeyRing> keyRingIter = pgpSec.getKeyRings();
+        while (keyRingIter.hasNext()) {
+            PGPSecretKeyRing keyRing = keyRingIter.next();
+            Iterator<PGPSecretKey> keyIter = keyRing.getSecretKeys();
+            while (keyIter.hasNext()) {
+                PGPSecretKey key = keyIter.next();
+                if (key.isSigningKey() || key.isMasterKey()) {
+                    PBESecretKeyDecryptor decryptor = new JcePBESecretKeyDecryptorBuilder()
+                            .setProvider("BC")
+                            .build(passphrase.toCharArray());
+
+                    return key.extractPrivateKey(decryptor);
+                }
+            }
+        }
+        throw new IllegalArgumentException("No suitable secret key found");
+    }
+}
