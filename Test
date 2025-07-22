@@ -1,0 +1,121 @@
+@ExtendWith(MockitoExtension.class)
+class TransactionSchedulerTest {
+
+    @InjectMocks
+    private TransactionScheduler transactionScheduler;
+
+    @Mock
+    private TransactionSchedulerService transactionSchedulerService;
+
+    @Mock
+    private RestTemplate restTemplate;
+
+    @BeforeEach
+    void setup() {
+        ReflectionTestUtils.setField(transactionScheduler, "eventTypePosted", "posted");
+        ReflectionTestUtils.setField(transactionScheduler, "eventTypePurged", "purged");
+        ReflectionTestUtils.setField(transactionScheduler, "eventTypeRejected", "rejected");
+        ReflectionTestUtils.setField(transactionScheduler, "transactionPostedUrl", "http://dummy-url.com");
+    }
+
+    @Test
+    void testTransactionEventPublish_success() throws Exception {
+        // Create mock response entity
+        ResponseEntity<?> responseEntity = mock(ResponseEntity.class, RETURNS_DEEP_STUBS);
+
+        // Mocking market details
+        List<Object> marketDetails = List.of(mock(Object.class));
+        when(responseEntity.getBody().getMarketDetailsList()).thenReturn(marketDetails);
+        when(marketDetails.get(0).getMarketCode()).thenReturn("IN");
+
+        // Mocking globeStarCommunicationDtoList
+        List<Object> globeList = List.of(mock(Object.class));
+        when(responseEntity.getBody().getGlobeStarCommunicationDtoList()).thenReturn(globeList);
+        when(globeList.get(0).getCorrelationId()).thenReturn("corr-1");
+
+        // Mocking rhrCommunicationDtoList
+        List<Object> rhrList = List.of(mock(Object.class));
+        when(responseEntity.getBody().getRhrCommunicationDtoList()).thenReturn(rhrList);
+        when(rhrList.get(0).getCorrelationId()).thenReturn("corr-2");
+
+        when(transactionSchedulerService.getTransactionEventList()).thenReturn(responseEntity);
+
+        doNothing().when(transactionScheduler).publishTransaction(any(), any());
+
+        transactionScheduler.transactionEventPublish();
+
+        verify(transactionSchedulerService).getTransactionEventList();
+    }
+
+    @Test
+    void testPublishTransaction_success() throws Exception {
+        ResponseEntity<String> mockResponse = new ResponseEntity<>("Success", HttpStatus.OK);
+
+        when(restTemplate.exchange(eq("http://dummy-url.com"), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
+                .thenReturn(mockResponse)
+                .thenReturn(mockResponse)
+                .thenReturn(mockResponse);
+
+        transactionScheduler.publishTransaction("corr123", "filter");
+
+        verify(restTemplate, times(3)).exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class));
+    }
+
+    @Test
+    void testPublishTransaction_with401Error() {
+        HttpClientErrorException ex = HttpClientErrorException.create(HttpStatus.UNAUTHORIZED, "Unauthorized", HttpHeaders.EMPTY, null, null);
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
+                .thenThrow(ex);
+
+        assertThrows(HMACAuthException.class, () ->
+                transactionScheduler.publishTransaction("corr123", "filter")
+        );
+    }
+
+    @Test
+    void testPublishTransaction_with400Error() {
+        String errorJson = "{\"message\":\"Bad request\"}";
+        HttpClientErrorException ex = HttpClientErrorException.create(HttpStatus.BAD_REQUEST, "Bad Request", HttpHeaders.EMPTY, errorJson.getBytes(), null);
+
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
+                .thenThrow(ex);
+
+        assertThrows(ResponseErrorException.class, () ->
+                transactionScheduler.publishTransaction("corr123", "filter")
+        );
+    }
+
+    @Test
+    void testPublishTransaction_with503Error() {
+        HttpServerErrorException ex = HttpServerErrorException.create(HttpStatus.SERVICE_UNAVAILABLE, "Service Unavailable", HttpHeaders.EMPTY, null, null);
+
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
+                .thenThrow(ex);
+
+        assertThrows(ResponseErrorException.class, () ->
+                transactionScheduler.publishTransaction("corr123", "filter")
+        );
+    }
+
+    @Test
+    void testPublishTransaction_withConnectionError() {
+        ResourceAccessException ex = new ResourceAccessException("Server refused to connect", new ConnectException());
+
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
+                .thenThrow(ex);
+
+        assertThrows(ServerBusyException.class, () ->
+                transactionScheduler.publishTransaction("corr123", "filter")
+        );
+    }
+
+    @Test
+    void testPublishTransaction_withOtherException() {
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
+                .thenThrow(new RuntimeException("Some other exception"));
+
+        assertThrows(ResponseErrorException.class, () ->
+                transactionScheduler.publishTransaction("corr123", "filter")
+        );
+    }
+}
