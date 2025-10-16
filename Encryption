@@ -1,12 +1,9 @@
-package com.aexp.opraah.sanctionscreening.security.PGP;
-
 import org.pgpainless.PGPainless;
+import org.pgpainless.encryption_signing.EncryptionOptions;
 import org.pgpainless.encryption_signing.EncryptionStream;
 import org.pgpainless.encryption_signing.ProducerOptions;
-import org.pgpainless.encryption_signing.EncryptionOptions;
-import org.pgpainless.algorithm.EncryptionAlgorithm;
+import org.pgpainless.algorithm.SymmetricKeyAlgorithm;
 import org.pgpainless.algorithm.CompressionAlgorithm;
-import org.pgpainless.algorithm.HashAlgorithm;
 import org.pgpainless.key.collection.PGPPublicKeyRing;
 
 import java.io.*;
@@ -15,47 +12,47 @@ import java.util.Base64;
 
 public class PGPEncryption {
 
-    public static void encryptFile(File inputFile, String publicKeyString, File outputFile) throws IOException {
-        // ✅ Decode Base64 public key string to UTF-8
-        String publicKeyUtf8 = convertToUTF8(publicKeyString);
+    /**
+     * Encrypt a file using PGPainless 1.7.4 and a Base64 public key string.
+     */
+    public static void encryptFile(File inputFile, String base64PublicKey, File outputFile) throws IOException {
+        // Decode Base64-encoded public key string
+        byte[] keyBytes = Base64.getDecoder().decode(base64PublicKey.getBytes(StandardCharsets.UTF_8));
 
-        // ✅ Read public key directly from memory
+        // Load the public key
         PGPPublicKeyRing publicKeyRing = PGPainless.readKeyRing()
-                .publicKeyRing(new ByteArrayInputStream(publicKeyUtf8.getBytes(StandardCharsets.UTF_8)));
+                .publicKeyRing(new ByteArrayInputStream(keyBytes));
 
-        // ✅ Build encryption options using new API style
+        // Configure encryption options
         EncryptionOptions encryptionOptions = EncryptionOptions.get()
                 .addRecipient(publicKeyRing)
-                .configureSymmetricEncryption()
-                    .withEncryptionAlgorithm(EncryptionAlgorithm.AES_256)
-                    .withHashAlgorithm(HashAlgorithm.SHA256)
-                    .withCompressionAlgorithm(CompressionAlgorithm.UNCOMPRESSED)
-                .done();
+                .overrideEncryptionAlgorithm(SymmetricKeyAlgorithm.AES_256);
 
-        // ✅ Build producer options
+        // Configure producer options (with optional compression and ASCII armor)
         ProducerOptions producerOptions = ProducerOptions.encrypt(encryptionOptions)
-                .setAsciiArmor(false); // false = .pgp binary output
+                .overrideCompressionAlgorithm(CompressionAlgorithm.ZIP)
+                .setAsciiArmor(false); // set to true if you want .asc text output
 
-        // ✅ Perform encryption
-        try (OutputStream ciphertext = new FileOutputStream(outputFile);
-             InputStream plaintext = new FileInputStream(inputFile);
+        // Perform encryption
+        try (OutputStream fileOut = new FileOutputStream(outputFile);
              EncryptionStream encryptionStream = PGPainless.encryptAndOrSign()
-                     .onOutputStream(ciphertext)
-                     .withOptions(producerOptions)) {
+                     .onOutputStream(fileOut)
+                     .withOptions(producerOptions);
+             InputStream inputStream = new FileInputStream(inputFile)) {
 
-            plaintext.transferTo(encryptionStream);
+            inputStream.transferTo(encryptionStream);
         }
 
         System.out.println("✅ File encrypted successfully: " + outputFile.getAbsolutePath());
     }
 
-    private static String convertToUTF8(String publicKeyString) {
-        String cleaned = publicKeyString
-                .replaceFirst("^data:application/octet-stream;base64,", "")
-                .replaceAll("\\r?\\n", "")
-                .trim();
+    public static void main(String[] args) throws IOException {
+        File input = new File("test.txt");
+        File output = new File("test.txt.pgp");
 
-        byte[] decoded = Base64.getDecoder().decode(cleaned);
-        return new String(decoded, StandardCharsets.UTF_8);
+        // Replace with your actual Base64 public key
+        String publicKeyBase64 = "mQENBFq...==";
+
+        encryptFile(input, publicKeyBase64, output);
     }
 }
