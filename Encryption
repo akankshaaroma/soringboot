@@ -1,0 +1,61 @@
+package com.aexp.opraah.sanctionscreening.security.PGP;
+
+import org.pgpainless.PGPainless;
+import org.pgpainless.encryption_signing.EncryptionStream;
+import org.pgpainless.encryption_signing.ProducerOptions;
+import org.pgpainless.encryption_signing.EncryptionOptions;
+import org.pgpainless.algorithm.EncryptionAlgorithm;
+import org.pgpainless.algorithm.CompressionAlgorithm;
+import org.pgpainless.algorithm.HashAlgorithm;
+import org.pgpainless.key.collection.PGPPublicKeyRing;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
+public class PGPEncryption {
+
+    public static void encryptFile(File inputFile, String publicKeyString, File outputFile) throws IOException {
+        // ✅ Decode Base64 public key string to UTF-8
+        String publicKeyUtf8 = convertToUTF8(publicKeyString);
+
+        // ✅ Read public key directly from memory
+        PGPPublicKeyRing publicKeyRing = PGPainless.readKeyRing()
+                .publicKeyRing(new ByteArrayInputStream(publicKeyUtf8.getBytes(StandardCharsets.UTF_8)));
+
+        // ✅ Build encryption options using new API style
+        EncryptionOptions encryptionOptions = EncryptionOptions.get()
+                .addRecipient(publicKeyRing)
+                .configureSymmetricEncryption()
+                    .withEncryptionAlgorithm(EncryptionAlgorithm.AES_256)
+                    .withHashAlgorithm(HashAlgorithm.SHA256)
+                    .withCompressionAlgorithm(CompressionAlgorithm.UNCOMPRESSED)
+                .done();
+
+        // ✅ Build producer options
+        ProducerOptions producerOptions = ProducerOptions.encrypt(encryptionOptions)
+                .setAsciiArmor(false); // false = .pgp binary output
+
+        // ✅ Perform encryption
+        try (OutputStream ciphertext = new FileOutputStream(outputFile);
+             InputStream plaintext = new FileInputStream(inputFile);
+             EncryptionStream encryptionStream = PGPainless.encryptAndOrSign()
+                     .onOutputStream(ciphertext)
+                     .withOptions(producerOptions)) {
+
+            plaintext.transferTo(encryptionStream);
+        }
+
+        System.out.println("✅ File encrypted successfully: " + outputFile.getAbsolutePath());
+    }
+
+    private static String convertToUTF8(String publicKeyString) {
+        String cleaned = publicKeyString
+                .replaceFirst("^data:application/octet-stream;base64,", "")
+                .replaceAll("\\r?\\n", "")
+                .trim();
+
+        byte[] decoded = Base64.getDecoder().decode(cleaned);
+        return new String(decoded, StandardCharsets.UTF_8);
+    }
+}
