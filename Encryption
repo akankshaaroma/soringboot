@@ -1,37 +1,40 @@
+package com.example.pgp;
+
+import org.bouncycastle.openpgp.PGPPublicKeyRing;
 import org.pgpainless.PGPainless;
 import org.pgpainless.encryption_signing.EncryptionOptions;
 import org.pgpainless.encryption_signing.EncryptionStream;
 import org.pgpainless.encryption_signing.ProducerOptions;
 import org.pgpainless.algorithm.SymmetricKeyAlgorithm;
 import org.pgpainless.algorithm.CompressionAlgorithm;
-import org.pgpainless.key.collection.PGPPublicKeyRing;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-public class PGPEncryption {
+public class PGPFileEncryptor {
 
     /**
-     * Encrypt a file using PGPainless 1.7.4 and a Base64 public key string.
+     * Encrypt a file using a Base64-encoded public key and PGPainless 1.7.4
      */
     public static void encryptFile(File inputFile, String base64PublicKey, File outputFile) throws IOException {
-        // Decode Base64-encoded public key string
+
+        // Decode the Base64 public key to bytes
         byte[] keyBytes = Base64.getDecoder().decode(base64PublicKey.getBytes(StandardCharsets.UTF_8));
 
-        // Load the public key
+        // Parse the public key
         PGPPublicKeyRing publicKeyRing = PGPainless.readKeyRing()
                 .publicKeyRing(new ByteArrayInputStream(keyBytes));
 
-        // Configure encryption options
+        // Build encryption options
         EncryptionOptions encryptionOptions = EncryptionOptions.get()
                 .addRecipient(publicKeyRing)
                 .overrideEncryptionAlgorithm(SymmetricKeyAlgorithm.AES_256);
 
-        // Configure producer options (with optional compression and ASCII armor)
+        // Configure producer options (compression + binary output)
         ProducerOptions producerOptions = ProducerOptions.encrypt(encryptionOptions)
                 .overrideCompressionAlgorithm(CompressionAlgorithm.ZIP)
-                .setAsciiArmor(false); // set to true if you want .asc text output
+                .setAsciiArmor(false);  // set true if you prefer .asc armored text
 
         // Perform encryption
         try (OutputStream fileOut = new FileOutputStream(outputFile);
@@ -40,19 +43,21 @@ public class PGPEncryption {
                      .withOptions(producerOptions);
              InputStream inputStream = new FileInputStream(inputFile)) {
 
+            // Java 17 shortcut: copy data efficiently
             inputStream.transferTo(encryptionStream);
         }
 
-        System.out.println("✅ File encrypted successfully: " + outputFile.getAbsolutePath());
+        System.out.println("✅ File encrypted successfully → " + outputFile.getAbsolutePath());
     }
 
+    // Example usage
     public static void main(String[] args) throws IOException {
-        File input = new File("test.txt");
-        File output = new File("test.txt.pgp");
+        File input = new File("sample.txt");
+        File output = new File("sample.txt.pgp");
 
-        // Replace with your actual Base64 public key
-        String publicKeyBase64 = "mQENBFq...==";
+        // Replace with your actual Base64-encoded PUBLIC key
+        String base64PublicKey = "mQENBFq...==";
 
-        encryptFile(input, publicKeyBase64, output);
+        encryptFile(input, base64PublicKey, output);
     }
 }
