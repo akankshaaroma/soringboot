@@ -1,11 +1,9 @@
-String input = yourRawInputString.trim();
+String cleanedKey = publicKeyString
+        .replaceFirst("(?i)^data:[^,]+base64,", "")
+        .trim();
 
-// Remove `data:application/...` prefix if present
-if (input.contains(",")) {
-    input = input.substring(input.indexOf(",") + 1);
-}
+byte[] keyBytes = Base64.getDecoder().decode(cleanedKey);
 
-// Remove whitespace and non-Base64 characters (anything not A-Z, a-z, 0-9, +, /, =)
-String base64Clean = input.replaceAll("[^A-Za-z0-9+/=]", "");
-
-byte[] decoded = Base64.getDecoder().decode(base64Clean);
+// Use bytes directly
+PGPPublicKeyRing publicKeyRing = PGPainless.readKeyRing()
+        .publicKeyRing(new ByteArrayInputStream(keyBytes));
