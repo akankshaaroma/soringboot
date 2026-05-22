@@ -1,0 +1,752 @@
+# CAP Tracking Platform – Workflow Service Deep Dive
+
+# 1. What is Workflow Service?
+
+Workflow Service is the main brain of the CAP platform.
+
+It controls:
+
+* CAP lifecycle
+* task lifecycle
+* workflow movement
+* SLA tracking
+* task dependency
+* assignment logic
+* event publishing
+
+It decides:
+
+What should happen next?
+
+It does NOT perform:
+
+* APR calculations
+* large SQL processing
+* file generation
+* heavy computations
+
+Those belong to Processing Services.
+
+---
+
+# 2. High Level Responsibility
+
+Create Workflow
+↓
+Create Tasks
+↓
+Activate Tasks
+↓
+Track Status
+↓
+Validate Dependencies
+↓
+Move Workflow Forward
+↓
+Track SLA
+↓
+Publish Events
+
+---
+
+# 3. Workflow Service Internal Components
+
+Main Internal Components:
+
+* Workflow Controller
+* Workflow Orchestrator
+* Task Dependency Resolver
+* State Machine
+* SLA Engine
+* Assignment Engine
+* Event Publisher
+* Audit Writer
+
+---
+
+# 4. Recommended Internal Class Structure
+
+workflow-service
+│
+├── controller
+├── orchestrator
+│   └── WorkflowOrchestrator
+├── engine
+│   ├── DependencyResolver
+│   ├── StateMachine
+│   ├── SlaEngine
+│   └── AssignmentEngine
+├── service
+├── repository
+├── entity
+├── publisher
+└── listener
+
+---
+
+# 5. Core Classes
+
+## WorkflowOrchestrator
+
+MOST IMPORTANT CLASS.
+
+Controls overall flow.
+
+Responsibilities:
+
+* start workflow
+* complete task
+* activate next task
+* publish events
+* move workflow forward
+
+Example:
+
+completeTask(taskId)
+↓
+update task status
+↓
+write audit
+↓
+check dependency
+↓
+activate next task
+↓
+publish event
+
+---
+
+## DependencyResolver
+
+Checks:
+Can next task start?
+
+Uses:
+
+* WORKFLOW_TASK_DEPENDENCY
+* WORKFLOW_GROUP_DEPENDENCY
+
+---
+
+## StateMachine
+
+Validates status movement.
+
+Allowed:
+READY → IN_PROGRESS
+
+Not allowed:
+COMPLETED → READY
+
+---
+
+## SLAEngine
+
+Tracks deadlines.
+
+Checks:
+Is task overdue?
+
+---
+
+## AssignmentEngine
+
+Decides:
+Who should get task?
+
+Uses:
+
+* ASSIGNMENT_RULE
+
+---
+
+## EventPublisher
+
+Publishes:
+
+* TASK_COMPLETED
+* TASK_FAILED
+* SLA_BREACHED
+
+To:
+
+* Pub/Sub
+* Audit service
+* Notification service
+
+---
+
+# 6. Database Tables Explained
+
+IMPORTANT:
+
+There are 2 categories:
+
+| Category          | Meaning               |
+| ----------------- | --------------------- |
+| Definition Tables | Workflow template     |
+| Runtime Tables    | Actual live execution |
+
+---
+
+# PART A – DEFINITION TABLES
+
+These define HOW workflow SHOULD behave.
+
+---
+
+## TABLE: WORKFLOW_DEFINITION ✅ Already Proposed
+
+Master workflow template.
+
+Example:
+APR_REMEDIATION
+
+Stores:
+
+* workflow name
+* workflow code
+* version
+* active flag
+
+Why needed?
+Reusable workflow templates.
+
+Many CAPs can use same workflow.
+
+---
+
+## TABLE: WORKFLOW_TASK_GROUP ✅ Already Proposed
+
+Groups tasks into phases.
+
+Examples:
+
+* Population Processing
+* Validation
+* Approval
+
+Why needed?
+Without groups:
+
+* workflow becomes flat
+* UI becomes messy
+* parallel execution difficult
+
+---
+
+## TABLE: WORKFLOW_TASK_DEFINITION ✅ Already Proposed
+
+MOST IMPORTANT DEFINITION TABLE.
+
+Defines each task.
+
+Example Tasks:
+
+* Fetch Population
+* Validate Population
+* Calculate APR
+* Generate Letters
+
+Stores:
+
+* task name
+* task type
+* SLA duration
+* mandatory flag
+
+Why needed?
+Defines actual workflow steps.
+
+---
+
+## TABLE: WORKFLOW_GROUP_DEPENDENCY ✅ Already Proposed
+
+Defines:
+Which group starts after another group?
+
+Example:
+Validation starts after Population Processing.
+
+Why needed?
+Controls stage-level orchestration.
+
+---
+
+## TABLE: WORKFLOW_TASK_DEPENDENCY ⭐ Suggested Addition
+
+Why added?
+Your proposal only had group dependency.
+
+But real workflows need task-to-task dependency.
+
+Example:
+Validate Population depends on Fetch Population.
+
+Why important?
+Needed for:
+
+* automation
+* dynamic execution
+* parallel workflows
+* enterprise orchestration
+
+---
+
+## TABLE: SLA_POLICY ⭐ Suggested Addition
+
+Why added?
+Currently SLA inside task definition is too rigid.
+
+Business changes SLA frequently.
+
+Better Design:
+Separate SLA from task definition.
+
+Example:
+
+* Task must complete in 24 hours
+* Escalate after 48 hours
+
+Why important?
+Makes SLA configurable without changing workflow structure.
+
+---
+
+## TABLE: ASSIGNMENT_RULE ⭐ Suggested Addition
+
+Why added?
+Task assignment should not be hardcoded.
+
+Example:
+
+* Assign to CAP_OWNER
+* Assign to COMPLIANCE_MANAGER
+
+Why important?
+Supports:
+
+* dynamic routing
+* future automation
+* role-based assignment
+
+---
+
+# PART B – RUNTIME TABLES
+
+These tables track WHAT is happening RIGHT NOW.
+
+---
+
+## TABLE: WORKFLOW_INSTANCE ✅ Already Proposed
+
+One running workflow.
+
+Example:
+CAP-1045 running APR workflow.
+
+Stores:
+
+* workflow status
+* start time
+* completion time
+
+Why needed?
+Main runtime parent entity.
+
+---
+
+## TABLE: WORKFLOW_TASK_GROUP_INSTANCE ✅ Already Proposed
+
+Running version of a group.
+
+Example:
+Validation Group for CAP-1045.
+
+Why needed?
+Tracks:
+
+* group progress
+* stage completion
+* parallel branches
+
+---
+
+## TABLE: WORKFLOW_TASK_INSTANCE ✅ Already Proposed
+
+MOST IMPORTANT RUNTIME TABLE.
+
+One actual running task.
+
+Example:
+Validate Population for CAP-1045.
+
+Stores:
+
+* assignee
+* status
+* SLA deadline
+* completion time
+* escalation flag
+
+Suggested Additional Fields:
+
+* retry_count
+* reminder_sent_count
+* last_reminder_sent_at
+* escalated
+
+Why important?
+Needed for:
+
+* retries
+* reminders
+* escalation handling
+
+---
+
+## TABLE: WORKFLOW_TASK_AUDIT ✅ Already Proposed
+
+Stores task history.
+
+Example:
+
+* READY → IN_PROGRESS
+* IN_PROGRESS → COMPLETED
+
+Why needed?
+Enterprise audit/compliance.
+
+---
+
+## TABLE: WORKFLOW_EVENT ✅ Already Proposed
+
+Stores system events.
+
+Example Events:
+
+* TASK_CREATED
+* TASK_COMPLETED
+* TASK_FAILED
+* SLA_BREACHED
+
+Suggested Additional Fields:
+
+* correlation_id
+* event_source
+* causation_id
+
+Why important?
+Helps:
+
+* debugging
+* tracing
+* Pub/Sub tracking
+
+---
+
+## TABLE: NOTIFICATION_QUEUE ⭐ Suggested Addition
+
+Why added?
+Emails should NOT be sent directly inside workflow transaction.
+
+Flow:
+Workflow Service
+↓
+creates notification row
+↓
+Notification Service sends email
+
+Why important?
+Supports:
+
+* retries
+* recovery
+* async communication
+
+---
+
+# 7. Full Workflow Execution Flow
+
+Example Workflow:
+
+Fetch Population
+↓
+Validate Population
+↓
+APR Calculation
+↓
+Approval
+↓
+Generate Letters
+
+---
+
+## STEP 1 – User Creates CAP
+
+API:
+POST /caps
+
+Flow:
+UI
+↓
+Gateway
+↓
+Workflow Service
+↓
+Read WORKFLOW_DEFINITION
+↓
+Create WORKFLOW_INSTANCE
+↓
+Create TASK_GROUP_INSTANCE
+↓
+Create TASK_INSTANCE
+↓
+First task becomes READY
+
+Tables Used:
+
+* WORKFLOW_DEFINITION
+* WORKFLOW_TASK_GROUP
+* WORKFLOW_TASK_DEFINITION
+* WORKFLOW_INSTANCE
+* WORKFLOW_TASK_GROUP_INSTANCE
+* WORKFLOW_TASK_INSTANCE
+* WORKFLOW_EVENT
+* WORKFLOW_TASK_AUDIT
+
+---
+
+## STEP 2 – User Opens Dashboard
+
+APIs:
+
+* GET /tasks/my-tasks
+* GET /workflows/{workflowId}
+
+Workflow Service Reads:
+
+* WORKFLOW_INSTANCE
+* WORKFLOW_TASK_INSTANCE
+
+---
+
+## STEP 3 – User Starts Task
+
+API:
+POST /tasks/{taskId}/start
+
+Workflow Service Does:
+
+* Validate state transition
+* Update TASK_INSTANCE
+* Write TASK_AUDIT
+* Write WORKFLOW_EVENT
+
+---
+
+## STEP 4 – User Completes Task
+
+API:
+POST /tasks/{taskId}/complete
+
+Workflow Service Flow:
+
+* Update task status
+* Write audit
+* Write event
+* Check dependency
+* Activate next task
+
+Tables Used:
+
+* WORKFLOW_TASK_INSTANCE
+* WORKFLOW_TASK_AUDIT
+* WORKFLOW_EVENT
+* WORKFLOW_TASK_DEPENDENCY
+
+---
+
+## STEP 5 – Automated Task Starts
+
+Suppose APR Calculation is automated.
+
+Workflow Service Publishes:
+TASK_REQUESTED
+
+to Pub/Sub.
+
+APR Service Consumes Event.
+
+Runs:
+
+* calculations
+* queries
+* processing
+
+APR Service Publishes:
+TASK_COMPLETED
+
+Workflow Service Consumes Result.
+
+Updates:
+WORKFLOW_TASK_INSTANCE
+
+and activates next task.
+
+---
+
+## STEP 6 – SLA Monitoring
+
+Scheduler Checks:
+SLA_POLICY
+
+If overdue:
+Workflow service:
+
+* mark SLA breached
+* write event
+* create notification
+
+Tables Used:
+
+* SLA_POLICY
+* WORKFLOW_TASK_INSTANCE
+* WORKFLOW_EVENT
+* NOTIFICATION_QUEUE
+
+---
+
+## STEP 7 – Notification Sent
+
+Notification Service Reads:
+NOTIFICATION_QUEUE
+
+Sends Email.
+
+Then updates:
+status = SENT
+
+---
+
+## STEP 8 – Workflow Completes
+
+When all tasks completed:
+WORKFLOW_INSTANCE.status = COMPLETED
+
+Event Written:
+WORKFLOW_COMPLETED
+
+---
+
+# 8. Main APIs
+
+## CAP APIs
+
+* POST /caps
+* GET /caps/{id}
+* GET /caps/search
+* PUT /caps/{id}
+* POST /caps/{id}/cancel
+
+---
+
+## Workflow APIs
+
+* POST /workflows/start
+* GET /workflows/{id}
+* GET /workflows/{id}/timeline
+* POST /workflows/{id}/pause
+* POST /workflows/{id}/resume
+
+---
+
+## Task APIs
+
+* GET /tasks/{id}
+* GET /tasks/my-tasks
+* POST /tasks/{id}/start
+* POST /tasks/{id}/complete
+* POST /tasks/{id}/approve
+* POST /tasks/{id}/reject
+* PUT /tasks/{id}/assignee
+* POST /tasks/{id}/comments
+* POST /tasks/{id}/attachments
+
+---
+
+## SLA APIs
+
+* GET /sla/breached
+* GET /tasks/{id}/sla
+
+---
+
+## Audit APIs
+
+* GET /audit/workflows/{workflowId}
+* GET /audit/tasks/{taskId}
+
+---
+
+# 9. Sequence Diagram
+
+User
+↓
+Gateway
+↓
+Workflow Service
+↓
+Create Workflow Instance
+↓
+Create Task Instance
+↓
+Task READY
+↓
+User Completes Task
+↓
+Workflow Service Checks Dependency
+↓
+Next Task Activated
+↓
+If Automated → Publish Pub/Sub Event
+↓
+Processing Service Executes
+↓
+Publishes Completion Event
+↓
+Workflow Service Updates Status
+↓
+Notification Service Sends Email
+
+---
+
+# 10. Most Important Architectural Understanding
+
+Workflow Service controls:
+what should happen next.
+
+Processing Services perform:
+actual heavy work.
+
+Notification Service handles:
+emails/reminders/escalations.
+
+Audit Service stores:
+history and traceability.
+
+---
+
+# Final Understanding
+
+The heart of the system is:
+
+Workflow Service
++
+Task Dependency
++
+Task Runtime Tracking
++
+Event Driven Architecture
+
+That combination becomes your enterprise orchestration platform.
