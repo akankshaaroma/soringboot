@@ -1,3 +1,23 @@
+# 🚀 Machine Learning → Deep Learning → GenAI Roadmap
+
+## 🗺️ Overview
+
+
+🧠 Phase 1 — Math
+   ↓
+🐍 Phase 2 — Python
+   ↓
+🤖 Phase 3 — Andrew Ng — Machine Learning Specialization
+   ↓
+🧠 Phase 4 — Andrew Ng — Deep Learning Specialization
+   ↓
+🤗 Phase 5 — Transformers & LLM Fundamentals
+   ↓
+🛠️ Phase 6 — GenAI Application Development
+```
+
+---
+
 # 🧠 Phase 1 — Math Roadmap for Machine Learning → Deep Learning → GenAI
 
 ---
@@ -9,31 +29,6 @@
 **StatQuest — Statistics Fundamentals**
 
 🔗 [https://www.youtube.com/playlist?list=PLblh5JKOoLUK0FLuzwntyYI10UQFUhsY9](https://www.youtube.com/playlist?list=PLblh5JKOoLUK0FLuzwntyYI10UQFUhsY9)
-
-### ✅ Must Learn
-
-- [ ] Mean
-- [ ] Variance
-- [ ] Standard deviation
-- [ ] Probability distributions
-- [ ] Normal distribution
-- [ ] Population vs estimated parameters
-- [ ] Sampling from a distribution
-- [ ] Conditional probability
-- [ ] Bayes' theorem
-- [ ] Expected value
-- [ ] Probability vs likelihood
-- [ ] Maximum likelihood — intuition only
-- [ ] Covariance
-- [ ] Pearson correlation
-- [ ] Odds
-- [ ] Log-odds
-
-### 🟡 Optional
-
-- [ ] Central Limit Theorem
-- [ ] Histograms
-- [ ] Boxplots
 
 ### ❌ Skip for Now
 
@@ -58,21 +53,6 @@
 
 🔗 [https://www.3blue1brown.com/topics/linear-algebra](https://www.3blue1brown.com/topics/linear-algebra)
 
-### ✅ Must Learn
-
-- [ ] Scalars
-- [ ] Vectors
-- [ ] Vector addition
-- [ ] Scalar multiplication
-- [ ] Linear combinations
-- [ ] Matrices
-- [ ] Matrix rows and columns
-- [ ] Matrix dimensions / shape
-- [ ] Matrix-vector multiplication
-- [ ] Matrix multiplication
-- [ ] Dot product
-- [ ] Matrix transpose
-
 ### ❌ Skip for Now
 
 - Determinants
@@ -96,18 +76,6 @@
 
 🔗 [https://www.3blue1brown.com/topics/calculus](https://www.3blue1brown.com/topics/calculus)
 
-### ✅ Must Learn
-
-- [ ] Functions
-- [ ] Slope
-- [ ] Derivative
-- [ ] Derivative intuition
-- [ ] Basic derivative rules
-- [ ] Partial derivatives
-- [ ] Chain rule
-- [ ] Gradient
-- [ ] Gradient descent intuition
-
 ### ❌ Skip for Now
 
 - Integration techniques
@@ -127,39 +95,19 @@
 
 🔗 [https://www.youtube.com/watch?v=cEvgcoyZvB4&t=720s](https://www.youtube.com/watch?v=cEvgcoyZvB4\&t=720s)
 
-### ✅ Must Learn
-
-- [ ] Exponentials
-- [ ] `e^x`
-- [ ] Natural logarithm
-- [ ] `ln(x)`
-- [ ] Basic log rules
-- [ ] Relationship between logs and exponentials
-
 ---
 
 ## 5️⃣ Backpropagation Bridge
 
 ### 📚 Resources
 
-**3Blue1Brown — What is Backpropagation Really Doing?**
+1. **3Blue1Brown — What is Backpropagation Really Doing?**
 
-🔗 [https://www.3blue1brown.com/lessons/backpropagation/](https://www.3blue1brown.com/lessons/backpropagation/)
+   🔗 [https://www.3blue1brown.com/lessons/backpropagation/](https://www.3blue1brown.com/lessons/backpropagation/)
 
-**3Blue1Brown — Backpropagation Calculus**
+2. **3Blue1Brown — Backpropagation Calculus**
 
-🔗 [https://www.3blue1brown.com/lessons/backpropagation-calculus/](https://www.3blue1brown.com/lessons/backpropagation-calculus/)
-
-### ✅ Must Understand
-
-- [ ] Forward propagation
-- [ ] Loss
-- [ ] Weight updates
-- [ ] Partial derivatives
-- [ ] Chain rule
-- [ ] Gradient
-- [ ] Backpropagation
-- [ ] Why gradients move backward through the network
+   🔗 [https://www.3blue1brown.com/lessons/backpropagation-calculus/](https://www.3blue1brown.com/lessons/backpropagation-calculus/)
 
 ---
 
@@ -173,22 +121,7 @@
 
 **Kaggle — Python**
 
-🔗 https://www.kaggle.com/learn/python
-
-### ✅ Must Learn
-
-- [ ] Variables
-- [ ] Strings
-- [ ] Lists
-- [ ] Tuples
-- [ ] Dictionaries
-- [ ] `if / else`
-- [ ] Loops
-- [ ] Functions
-- [ ] List comprehensions
-- [ ] Imports
-- [ ] Exceptions
-- [ ] Basic classes
+🔗 [https://www.kaggle.com/learn/python](https://www.kaggle.com/learn/python)
 
 ### ❌ Skip for Now
 
@@ -207,25 +140,7 @@
 
 **NumPy — Absolute Basics for Beginners**
 
-🔗 https://numpy.org/doc/stable/user/absolute_beginners.html
-
-### ✅ Must Learn
-
-- [ ] `np.array`
-- [ ] Shape
-- [ ] Dimensions
-- [ ] Indexing
-- [ ] Slicing
-- [ ] Reshape
-- [ ] Transpose
-- [ ] Broadcasting
-- [ ] Element-wise operations
-- [ ] `sum`
-- [ ] `mean`
-- [ ] `max`
-- [ ] `argmax`
-- [ ] Dot product
-- [ ] Matrix multiplication using `@`
+🔗 [https://numpy.org/doc/stable/user/absolute\_beginners.html](https://numpy.org/doc/stable/user/absolute_beginners.html)
 
 ---
 
@@ -235,14 +150,7 @@
 
 **Jupyter Notebook Documentation**
 
-🔗 https://jupyter-notebook.readthedocs.io/en/stable/
-
-### ✅ Must Learn
-
-- [ ] Run cells
-- [ ] Restart kernel
-- [ ] Markdown cells
-- [ ] Inspect variables
+🔗 [https://jupyter-notebook.readthedocs.io/en/stable/](https://jupyter-notebook.readthedocs.io/en/stable/)
 
 ---
 
@@ -252,16 +160,7 @@
 
 **Kaggle — Pandas**
 
-🔗 https://www.kaggle.com/learn/pandas
-
-### ✅ Must Learn
-
-- [ ] `DataFrame`
-- [ ] `Series`
-- [ ] `read_csv`
-- [ ] Select columns
-- [ ] Filter rows
-- [ ] Basic missing-value handling
+🔗 [https://www.kaggle.com/learn/pandas](https://www.kaggle.com/learn/pandas)
 
 ---
 
@@ -271,33 +170,30 @@
 
 **Matplotlib — Quick Start**
 
-🔗 https://matplotlib.org/stable/users/explain/quick_start.html
+🔗 [https://matplotlib.org/stable/users/explain/quick\_start.html](https://matplotlib.org/stable/users/explain/quick_start.html)
 
-### ✅ Must Learn
-
-- [ ] Line plot
-- [ ] Scatter plot
-- [ ] Axis labels
-- [ ] `show()`
+---
 
 # 🤖 Phase 3 — Andrew Ng — Machine Learning Specialization
 
-🔗 https://www.coursera.org/specializations/machine-learning-introduction
+🔗 [https://www.coursera.org/specializations/machine-learning-introduction](https://www.coursera.org/specializations/machine-learning-introduction)
 
 ### ✅ Only Learn
 
-Course 1: Supervised Machine Learning
+- Course 1: Supervised Machine Learning
+- Course 2: Advanced Learning Algorithms
 
-Course 2: Advanced Learning Algorithms
+---
 
 # 🧠 Phase 4 — Andrew Ng — Deep Learning Specialization
 
-🔗 https://www.coursera.org/specializations/deep-learning
+🔗 [https://www.coursera.org/specializations/deep-learning](https://www.coursera.org/specializations/deep-learning)
 
----
-Skip ❌ Course 4 — Convolutional Neural Networks
+### Skip
 
-DO Remaining:
+❌ Course 4 — Convolutional Neural Networks
+
+### DO Remaining:
 
 ## ✅ Course 1 — Neural Networks and Deep Learning
 
@@ -307,15 +203,29 @@ DO Remaining:
 
 ## ✅ Course 5 — Sequence Models
 
+---
 
 # 🤗 Phase 5 — Transformers & LLM Fundamentals
+
+### ✅ Prerequisite — PyTorch Basics
+
+**Official PyTorch Beginner Series**
+
+🔗 [https://www.youtube.com/playlist?list=PL\_lsbAsL\_o2CTlGHgMxNrKhzP97BaG9ZN](https://www.youtube.com/playlist?list=PL_lsbAsL_o2CTlGHgMxNrKhzP97BaG9ZN)
+
+### ❌ Skip for Now
+
+- TensorBoard Support
+- Model Understanding with Captum
+- Production Inference Deployment with PyTorch
 
 ### 📚 Resource
 
 **Hugging Face — LLM Course**
 
-🔗 https://huggingface.co/learn/llm-course
+🔗 [https://huggingface.co/learn/llm-course](https://huggingface.co/learn/llm-course)
 
+---
 
 # 🛠️ Phase 6 — GenAI Application Development
 
@@ -325,31 +235,62 @@ DO Remaining:
 
 **DeepLearning.AI — ChatGPT Prompt Engineering for Developers**
 
-🔗 https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/
+🔗 [https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/](https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/)
 
+---
 
 ## 2️⃣ Building LLM Systems
 
+### 📚 Resource
+
 **DeepLearning.AI — Building Systems with the ChatGPT API**
 
-🔗 https://www.deeplearning.ai/short-courses/building-systems-with-chatgpt/
+Multi-step LLM systems, chained prompts, Python API usage, and evaluation.
 
-## 3 . Lang Chain
+🔗 [https://www.deeplearning.ai/short-courses/building-systems-with-chatgpt/](https://www.deeplearning.ai/short-courses/building-systems-with-chatgpt/)
 
-https://www.deeplearning.ai/courses/langchain
+---
 
-## 4. Retrieval-Augmented Generation(RAG)
+## 3️⃣ Function Calling / Tools
+
+### 📚 Resource
+
+**DeepLearning.AI — Functions, Tools and Agents with LangChain**
+
+Function calling, tools, tool selection, and routing.
+
+🔗 [https://www.deeplearning.ai/courses/functions-tools-agents-langchain](https://www.deeplearning.ai/courses/functions-tools-agents-langchain)
+
+---
+
+## 4️⃣ Structured Outputs
+
+### 📚 Resource
+
+**DeepLearning.AI — Getting Structured LLM Output**
+
+Structured outputs, schemas, validation, and Pydantic.
+
+🔗 [https://www.deeplearning.ai/courses/getting-structured-llm-output](https://www.deeplearning.ai/courses/getting-structured-llm-output)
+
+---
+
+## 5️⃣ Lang Chain
+
+🔗 [https://www.deeplearning.ai/courses/langchain](https://www.deeplearning.ai/courses/langchain)
+
+---
+
+## 6️⃣ Retrieval-Augmented Generation (RAG)
 
 ### 📚 Resource
 
 **DeepLearning.AI — Retrieval Augmented Generation**
 
-🔗 https://www.deeplearning.ai/courses/retrieval-augmented-generation-rag/
+🔗 [https://www.deeplearning.ai/courses/retrieval-augmented-generation-rag/](https://www.deeplearning.ai/courses/retrieval-augmented-generation-rag/)
 
-## 5. Agentic AI
+---
 
-https://www.deeplearning.ai/courses/agentic-ai
+## 7️⃣ Agentic AI
 
-
-
-
+🔗 [https://www.deeplearning.ai/courses/agentic-ai](https://www.deeplearning.ai/courses/agentic-ai)
