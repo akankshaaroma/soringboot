@@ -1,182 +1,355 @@
-Phase 1: Maths for Gen AI
+# 🧠 Phase 1 — Math Roadmap for Machine Learning → Deep Learning → GenAI
 
-> StatQuest Statistics Fundamentals
-(https://www.youtube.com/playlist?list=PLblh5JKOoLUK0FLuzwntyYI10UQFUhsY9)
+---
 
-Study only:
+## 1️⃣ Statistics & Probability
 
-1. Mean, variance, standard deviation
-2. Probability distributions
-3. Normal distribution
-4. Population vs estimated parameters
-5. Sampling from a distribution
-6. Conditional probability
-7. Bayes theorem
-8. Expected value
-9. Probability vs likelihood
-10. Maximum likelihood — main idea only
-11. Covariance
-12. Pearson correlation
-13. Odds
-14. Log-odds / logarithms
+### 📚 Resource
 
-Optional:
-- Central Limit Theorem
-- Histograms
-- Boxplots
+**StatQuest — Statistics Fundamentals**
 
-Skip:
+🔗 [https://www.youtube.com/playlist?list=PLblh5JKOoLUK0FLuzwntyYI10UQFUhsY9](https://www.youtube.com/playlist?list=PLblh5JKOoLUK0FLuzwntyYI10UQFUhsY9)
+
+### ✅ Must Learn
+
+- [ ] Mean
+- [ ] Variance
+- [ ] Standard deviation
+- [ ] Probability distributions
+- [ ] Normal distribution
+- [ ] Population vs estimated parameters
+- [ ] Sampling from a distribution
+- [ ] Conditional probability
+- [ ] Bayes' theorem
+- [ ] Expected value
+- [ ] Probability vs likelihood
+- [ ] Maximum likelihood — intuition only
+- [ ] Covariance
+- [ ] Pearson correlation
+- [ ] Odds
+- [ ] Log-odds
+
+### 🟡 Optional
+
+- [ ] Central Limit Theorem
+- [ ] Histograms
+- [ ] Boxplots
+
+### ❌ Skip for Now
+
+- Hypothesis testing
 - p-values
-- hypothesis testing
-- confidence intervals
+- Confidence intervals
 - t-tests
 - ANOVA
-- power analysis
-- bootstrapping
+- Statistical power
+- Bootstrapping
 - Q-Q plots
+- Advanced statistical inference
+- Detailed MLE derivations
 
 ---
 
-> Linear Algebra
+## 2️⃣ Linear Algebra
 
-[3Blue1Brown — Essence of Linear Algebra]
-(https://www.3blue1brown.com/topics/linear-algebra)
+### 📚 Resource
 
-Study:
+**3Blue1Brown — Essence of Linear Algebra**
 
-1. Vectors
-2. Vector addition and scalar multiplication
-3. Linear combinations — intuition only
-4. Matrices
-5. Matrix dimensions / shapes
-6. Matrix-vector multiplication
-7. Matrix multiplication
-8. Dot product
-9. Transpose
+🔗 [https://www.3blue1brown.com/topics/linear-algebra](https://www.3blue1brown.com/topics/linear-algebra)
 
+### ✅ Must Learn
 
-Skip for now
+- [ ] Scalars
+- [ ] Vectors
+- [ ] Vector addition
+- [ ] Scalar multiplication
+- [ ] Linear combinations
+- [ ] Matrices
+- [ ] Matrix rows and columns
+- [ ] Matrix dimensions / shape
+- [ ] Matrix-vector multiplication
+- [ ] Matrix multiplication
+- [ ] Dot product
+- [ ] Matrix transpose
 
-- determinants
-- eigenvalues/eigenvectors
-- matrix inverses in depth
-- rank/null space
-- Cramer’s rule
-- cross products
-- change of basis
-- proofs
+### ❌ Skip for Now
 
-
->  Basic Calculus
-
-Use:
-
-3Blue1Brown — Essence of Calculus
-(https://www.3blue1brown.com/topics/calculus)
-
-Study:
-
-1. Functions
-2. Slope
-3. Derivative intuition
-4. Basic derivative rules
-5. Partial derivatives
-6. Chain rule
-7. Gradient
-8. Gradient descent intuition
-Skip
-
-- integration techniques
-- differential equations
-- epsilon-delta proofs
-- advanced limits
-- multivariable integration
-
-**Target time:** ~4–6 hours.
-
-> Small math bridge before Deep Learning
-After Andrew Ng ML, add these:
-
-### Exponentials
-
-\[
-e^x
-\]
-
-### Logarithms
-
-\[
-\log(x)
-\]
-
-### Sigmoid
-
-\[
-\sigma(z)=\frac{1}{1+e^{-z}}
-\]
-
-### Softmax
-
-\[
-softmax(z_i)=
-\frac{e^{z_i}}{\sum_j e^{z_j}}
-\]
-
-### Cross-entropy
-Understand conceptually:
-
-> how wrong the predicted probability distribution is compared with the target.
-
-### Chain rule + backprop
-At this point also watch:
-
-[3Blue1Brown — Backpropagation Calculus](https://www.3blue1brown.com/lessons/backpropagation-calculus/)
-
-This is where calculus becomes directly useful for neural networks.
-
-**Target time:** ~3–4 hours.
+- Determinants
+- Eigenvalues
+- Eigenvectors
+- Matrix inverse in depth
+- Rank
+- Null space
+- Cramer's rule
+- Cross product
+- Change of basis
+- Linear algebra proofs
 
 ---
 
-## Phase 5 — Math you add only when you reach GenAI
-Do not learn these in advance. Add them when needed.
+## 3️⃣ Calculus
 
-### Cosine similarity
+### 📚 Resource
 
-\[
-\cos(\theta)=
-\frac{a\cdot b}
-{\|a\|\|b\|}
-\]
+**3Blue1Brown — Essence of Calculus**
 
-Useful for:
-- embeddings
-- semantic search
-- RAG
+🔗 [https://www.3blue1brown.com/topics/calculus](https://www.3blue1brown.com/topics/calculus)
 
-### Normalization
-Understand scaling vectors and probabilities.
+### ✅ Must Learn
 
-### Attention math
+- [ ] Functions
+- [ ] Slope
+- [ ] Derivative
+- [ ] Derivative intuition
+- [ ] Basic derivative rules
+- [ ] Partial derivatives
+- [ ] Chain rule
+- [ ] Gradient
+- [ ] Gradient descent intuition
 
-Eventually:
+### ❌ Skip for Now
 
-\[
-Attention(Q,K,V)=
-softmax\left(
-\frac{QK^T}{\sqrt{d_k}}
-\right)V
-\]
-
-At that point, you already have all the required math:
-
-- matrices
-- transpose
-- matrix multiplication
-- dot products
-- square roots
-- softmax
-
-That is why advanced mathematics is not needed before starting GenAI.
+- Integration techniques
+- Differential equations
+- Epsilon-delta proofs
+- Advanced limits
+- Multivariable integration
+- Advanced mathematical proofs
 
 ---
+
+## 4️⃣ Logs & Exponentials
+
+### 📚 Resource
+
+**YouTube — Logs / Exponentials**
+
+🔗 [https://www.youtube.com/watch?v=cEvgcoyZvB4&t=720s](https://www.youtube.com/watch?v=cEvgcoyZvB4\&t=720s)
+
+### ✅ Must Learn
+
+- [ ] Exponentials
+- [ ] `e^x`
+- [ ] Natural logarithm
+- [ ] `ln(x)`
+- [ ] Basic log rules
+- [ ] Relationship between logs and exponentials
+
+---
+
+## 5️⃣ Backpropagation Bridge
+
+### 📚 Resources
+
+**3Blue1Brown — What is Backpropagation Really Doing?**
+
+🔗 [https://www.3blue1brown.com/lessons/backpropagation/](https://www.3blue1brown.com/lessons/backpropagation/)
+
+**3Blue1Brown — Backpropagation Calculus**
+
+🔗 [https://www.3blue1brown.com/lessons/backpropagation-calculus/](https://www.3blue1brown.com/lessons/backpropagation-calculus/)
+
+### ✅ Must Understand
+
+- [ ] Forward propagation
+- [ ] Loss
+- [ ] Weight updates
+- [ ] Partial derivatives
+- [ ] Chain rule
+- [ ] Gradient
+- [ ] Backpropagation
+- [ ] Why gradients move backward through the network
+
+---
+
+# 🐍 Phase 2 — Python Roadmap for Machine Learning → Deep Learning → GenAI
+
+---
+
+## 1️⃣ Python Basics
+
+### 📚 Resource
+
+**Kaggle — Python**
+
+🔗 https://www.kaggle.com/learn/python
+
+### ✅ Must Learn
+
+- [ ] Variables
+- [ ] Strings
+- [ ] Lists
+- [ ] Tuples
+- [ ] Dictionaries
+- [ ] `if / else`
+- [ ] Loops
+- [ ] Functions
+- [ ] List comprehensions
+- [ ] Imports
+- [ ] Exceptions
+- [ ] Basic classes
+
+### ❌ Skip for Now
+
+- Advanced OOP
+- Decorators
+- Generators
+- Metaclasses
+- Async programming
+- Advanced Python internals
+
+---
+
+## 2️⃣ NumPy
+
+### 📚 Resource
+
+**NumPy — Absolute Basics for Beginners**
+
+🔗 https://numpy.org/doc/stable/user/absolute_beginners.html
+
+### ✅ Must Learn
+
+- [ ] `np.array`
+- [ ] Shape
+- [ ] Dimensions
+- [ ] Indexing
+- [ ] Slicing
+- [ ] Reshape
+- [ ] Transpose
+- [ ] Broadcasting
+- [ ] Element-wise operations
+- [ ] `sum`
+- [ ] `mean`
+- [ ] `max`
+- [ ] `argmax`
+- [ ] Dot product
+- [ ] Matrix multiplication using `@`
+
+---
+
+## 3️⃣ Jupyter Notebook Basics
+
+### 📚 Resource
+
+**Jupyter Notebook Documentation**
+
+🔗 https://jupyter-notebook.readthedocs.io/en/stable/
+
+### ✅ Must Learn
+
+- [ ] Run cells
+- [ ] Restart kernel
+- [ ] Markdown cells
+- [ ] Inspect variables
+
+---
+
+## 4️⃣ Pandas
+
+### 📚 Resource
+
+**Kaggle — Pandas**
+
+🔗 https://www.kaggle.com/learn/pandas
+
+### ✅ Must Learn
+
+- [ ] `DataFrame`
+- [ ] `Series`
+- [ ] `read_csv`
+- [ ] Select columns
+- [ ] Filter rows
+- [ ] Basic missing-value handling
+
+---
+
+## 5️⃣ Matplotlib
+
+### 📚 Resource
+
+**Matplotlib — Quick Start**
+
+🔗 https://matplotlib.org/stable/users/explain/quick_start.html
+
+### ✅ Must Learn
+
+- [ ] Line plot
+- [ ] Scatter plot
+- [ ] Axis labels
+- [ ] `show()`
+
+# 🤖 Phase 3 — Andrew Ng — Machine Learning Specialization
+
+🔗 https://www.coursera.org/specializations/machine-learning-introduction
+
+### ✅ Only Learn
+
+Course 1: Supervised Machine Learning
+
+Course 2: Advanced Learning Algorithms
+
+# 🧠 Phase 4 — Andrew Ng — Deep Learning Specialization
+
+🔗 https://www.coursera.org/specializations/deep-learning
+
+---
+Skip ❌ Course 4 — Convolutional Neural Networks
+
+DO Remaining:
+
+## ✅ Course 1 — Neural Networks and Deep Learning
+
+## ✅ Course 2 — Improving Deep Neural Networks
+
+## ✅ Course 3 — Structuring Machine Learning Projects
+
+## ✅ Course 5 — Sequence Models
+
+
+# 🤗 Phase 5 — Transformers & LLM Fundamentals
+
+### 📚 Resource
+
+**Hugging Face — LLM Course**
+
+🔗 https://huggingface.co/learn/llm-course
+
+
+# 🛠️ Phase 6 — GenAI Application Development
+
+## 1️⃣ Prompt Engineering
+
+### 📚 Resource
+
+**DeepLearning.AI — ChatGPT Prompt Engineering for Developers**
+
+🔗 https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/
+
+
+## 2️⃣ Building LLM Systems
+
+**DeepLearning.AI — Building Systems with the ChatGPT API**
+
+🔗 https://www.deeplearning.ai/short-courses/building-systems-with-chatgpt/
+
+## 3 . Lang Chain
+
+https://www.deeplearning.ai/courses/langchain
+
+## 4. Retrieval-Augmented Generation(RAG)
+
+### 📚 Resource
+
+**DeepLearning.AI — Retrieval Augmented Generation**
+
+🔗 https://www.deeplearning.ai/courses/retrieval-augmented-generation-rag/
+
+## 5. Agentic AI
+
+https://www.deeplearning.ai/courses/agentic-ai
+
+
+
+
