@@ -1,0 +1,182 @@
+Phase 1: Maths for Gen AI
+
+> StatQuest Statistics Fundamentals
+(https://www.youtube.com/playlist?list=PLblh5JKOoLUK0FLuzwntyYI10UQFUhsY9)
+
+Study only:
+
+1. Mean, variance, standard deviation
+2. Probability distributions
+3. Normal distribution
+4. Population vs estimated parameters
+5. Sampling from a distribution
+6. Conditional probability
+7. Bayes theorem
+8. Expected value
+9. Probability vs likelihood
+10. Maximum likelihood — main idea only
+11. Covariance
+12. Pearson correlation
+13. Odds
+14. Log-odds / logarithms
+
+Optional:
+- Central Limit Theorem
+- Histograms
+- Boxplots
+
+Skip:
+- p-values
+- hypothesis testing
+- confidence intervals
+- t-tests
+- ANOVA
+- power analysis
+- bootstrapping
+- Q-Q plots
+
+---
+
+> Linear Algebra
+
+[3Blue1Brown — Essence of Linear Algebra]
+(https://www.3blue1brown.com/topics/linear-algebra)
+
+Study:
+
+1. Vectors
+2. Vector addition and scalar multiplication
+3. Linear combinations — intuition only
+4. Matrices
+5. Matrix dimensions / shapes
+6. Matrix-vector multiplication
+7. Matrix multiplication
+8. Dot product
+9. Transpose
+
+
+Skip for now
+
+- determinants
+- eigenvalues/eigenvectors
+- matrix inverses in depth
+- rank/null space
+- Cramer’s rule
+- cross products
+- change of basis
+- proofs
+
+
+>  Basic Calculus
+
+Use:
+
+3Blue1Brown — Essence of Calculus
+(https://www.3blue1brown.com/topics/calculus)
+
+Study:
+
+1. Functions
+2. Slope
+3. Derivative intuition
+4. Basic derivative rules
+5. Partial derivatives
+6. Chain rule
+7. Gradient
+8. Gradient descent intuition
+Skip
+
+- integration techniques
+- differential equations
+- epsilon-delta proofs
+- advanced limits
+- multivariable integration
+
+**Target time:** ~4–6 hours.
+
+> Small math bridge before Deep Learning
+After Andrew Ng ML, add these:
+
+### Exponentials
+
+\[
+e^x
+\]
+
+### Logarithms
+
+\[
+\log(x)
+\]
+
+### Sigmoid
+
+\[
+\sigma(z)=\frac{1}{1+e^{-z}}
+\]
+
+### Softmax
+
+\[
+softmax(z_i)=
+\frac{e^{z_i}}{\sum_j e^{z_j}}
+\]
+
+### Cross-entropy
+Understand conceptually:
+
+> how wrong the predicted probability distribution is compared with the target.
+
+### Chain rule + backprop
+At this point also watch:
+
+[3Blue1Brown — Backpropagation Calculus](https://www.3blue1brown.com/lessons/backpropagation-calculus/)
+
+This is where calculus becomes directly useful for neural networks.
+
+**Target time:** ~3–4 hours.
+
+---
+
+## Phase 5 — Math you add only when you reach GenAI
+Do not learn these in advance. Add them when needed.
+
+### Cosine similarity
+
+\[
+\cos(\theta)=
+\frac{a\cdot b}
+{\|a\|\|b\|}
+\]
+
+Useful for:
+- embeddings
+- semantic search
+- RAG
+
+### Normalization
+Understand scaling vectors and probabilities.
+
+### Attention math
+
+Eventually:
+
+\[
+Attention(Q,K,V)=
+softmax\left(
+\frac{QK^T}{\sqrt{d_k}}
+\right)V
+\]
+
+At that point, you already have all the required math:
+
+- matrices
+- transpose
+- matrix multiplication
+- dot products
+- square roots
+- softmax
+
+That is why advanced mathematics is not needed before starting GenAI.
+
+---
